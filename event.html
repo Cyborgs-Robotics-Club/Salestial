@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js" type="module"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+    <h1 class="text-2xl font-bold mb-4">All Events</h1>
+    <div id="eventsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- Events will be dynamically loaded here -->
+    </div>
+
+    <!-- Modal for showing event details -->
+    <div id="eventModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+            <button id="closeModal" class="float-right text-red-500 font-bold">X</button>
+            <h2 id="modalTitle" class="text-xl font-bold mb-2"></h2>
+            <img id="modalImage" class="w-full h-48 object-cover mb-4" alt="Event Image">
+            <p id="modalPrice" class="text-lg text-gray-700 mb-2"></p>
+            <p id="modalAbout" class="text-sm text-gray-500 mb-2"></p>
+            <p id="modalStructure" class="text-sm text-gray-500 mb-2"></p>
+            <p id="modalTimeline" class="text-sm text-gray-500 mb-2"></p>
+            <p id="modalRules" class="text-sm text-gray-500 mb-2"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs } from './firebase.js';
+
+        const eventsContainer = document.getElementById("eventsContainer");
+        const eventModal = document.getElementById("eventModal");
+        const closeModal = document.getElementById("closeModal");
+
+        const modalTitle = document.getElementById("modalTitle");
+        const modalImage = document.getElementById("modalImage");
+        const modalPrice = document.getElementById("modalPrice");
+        const modalAbout = document.getElementById("modalAbout");
+        const modalStructure = document.getElementById("modalStructure");
+        const modalTimeline = document.getElementById("modalTimeline");
+        const modalRules = document.getElementById("modalRules");
+
+        // Function to load all events from Firestore
+        async function loadEvents() {
+            eventsContainer.innerHTML = ''; // Clear the container
+            try {
+                const querySnapshot = await getDocs(collection(db, "events"));
+                querySnapshot.forEach(docSnapshot => {
+                    const event = docSnapshot.data();
+
+                    const eventCard = document.createElement("div");
+                    eventCard.classList.add("bg-white", "rounded", "shadow-lg", "p-4", "cursor-pointer");
+                    eventCard.onclick = () => openModal(event);
+
+                    eventCard.innerHTML = `
+                        <img src="${event.image}" class="w-full h-48 object-cover mb-4" alt="Event Image">
+                        <h3 class="text-xl font-bold">${event.name}</h3>
+                        <p class="text-lg text-gray-700"><strong>Price:</strong> ${event.price}</p>
+                    `;
+
+                    eventsContainer.appendChild(eventCard);
+                });
+            } catch (error) {
+                console.error("Error loading events: ", error);
+            }
+        }
+
+        // Function to open the modal with event details
+        function openModal(event) {
+            modalTitle.textContent = event.name;
+            modalImage.src = event.image;
+            modalPrice.textContent = `Price: ${event.price}`;
+            modalAbout.textContent = `About: ${event.about}`;
+            modalStructure.textContent = `Structure: ${event.structure}`;
+            modalTimeline.textContent = `Timeline: ${event.timeline}`;
+            modalRules.textContent = `Rules: ${event.rules}`;
+            eventModal.classList.remove("hidden");
+        }
+
+        // Function to close the modal
+        closeModal.addEventListener("click", () => {
+            eventModal.classList.add("hidden");
+        });
+
+        // Initial load
+        loadEvents();
+    </script>
+
+</body>
+</html>
