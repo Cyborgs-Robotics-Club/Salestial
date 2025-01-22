@@ -37,7 +37,7 @@
                 <li class="hover:text-gray-500 cursor-pointer">About</li>
                 <li class="hover:text-gray-500 cursor-pointer">Services</li>
                 <li class="hover:text-gray-500 cursor-pointer">Contact</li>
-                <a href="Login.html" class="hover:text-gray-500">Login</a>
+                <a id="authLink" class="hover:text-gray-500 cursor-pointer">Login</a>
                 <a href="profile.html">
                     <li class="hover:text-gray-500 cursor-pointer">Profile</li>
                 </a>
@@ -60,7 +60,7 @@
                 <li class="text-black hover:text-gray-500 py-2">About</li>
                 <li class="text-black hover:text-gray-500 py-2">Services</li>
                 <li class="text-black hover:text-gray-500 py-2">Contact</li>
-                <a href="Login.html" class="text-black hover:text-gray-500">Login</a>
+                <a id="mobileAuthLink" class="text-black hover:text-gray-500 cursor-pointer">Login</a>
                 <a href="profile.html">
                     <li class="text-black hover:text-gray-500 py-2">Profile</li>
                 </a>
@@ -83,9 +83,27 @@
     <script type="module">
         import { auth } from './firebase.js';
 
+        const authLink = document.getElementById('authLink');
+        const mobileAuthLink = document.getElementById('mobileAuthLink');
+
         auth.onAuthStateChanged((user) => {
             if (!user) {
-                window.location.href = 'login.html';
+                authLink.textContent = "Login";
+                authLink.href = "login.html";
+                mobileAuthLink.textContent = "Login";
+                mobileAuthLink.href = "login.html";
+            } else {
+                authLink.textContent = "Logout";
+                authLink.href = "#";
+                mobileAuthLink.textContent = "Logout";
+                mobileAuthLink.href = "#";
+
+                authLink.addEventListener('click', () => {
+                    auth.signOut();
+                });
+                mobileAuthLink.addEventListener('click', () => {
+                    auth.signOut();
+                });
             }
         });
 
