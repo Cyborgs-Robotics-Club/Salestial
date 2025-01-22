@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Event</title>
+    <title>Event Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js" type="module"></script>
+    <script type="module" src="firebase.js"></script>
 </head>
 <body class="bg-gray-100 p-6">
 
-    <h1 class="text-2xl font-bold mb-4">Upload Event Details</h1>
-    <form id="uploadForm" class="space-y-4 bg-white p-6 rounded shadow-md">
+    <h1 class="text-2xl font-bold mb-4">Event Manager</h1>
+
+    <!-- Upload Form -->
+    <form id="uploadForm" class="space-y-4 bg-white p-6 rounded shadow-md mb-6">
         <div>
             <label for="name" class="block font-medium">Event Name</label>
             <input type="text" id="name" class="w-full border rounded p-2" required>
@@ -40,14 +41,20 @@
             <label for="rules" class="block font-medium">Rules</label>
             <textarea id="rules" class="w-full border rounded p-2" rows="4" required></textarea>
         </div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Event</button>
     </form>
 
+    <!-- Event List -->
+    <div id="eventList" class="space-y-4"></div>
+
     <script type="module">
-        import { db, addDoc, collection } from './firebase.js';
+        import { db, addDoc, collection, getDocs, updateDoc, doc, deleteDoc, getDoc } from './firebase.js';
 
         const uploadForm = document.getElementById("uploadForm");
+        const eventList = document.getElementById("eventList");
+        let editingEventId = null;  // Store the ID of the event being edited
 
+        // Create new event or edit existing one
         uploadForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const name = document.getElementById("name").value;
@@ -59,21 +66,94 @@
             const rules = document.getElementById("rules").value;
 
             try {
-                await addDoc(collection(db, "events"), {
-                    name,
-                    image,
-                    price,
-                    about,
-                    structure,
-                    timeline,
-                    rules
-                });
-                alert("Event uploaded successfully!");
+                if (editingEventId) {
+                    // Update event
+                    const eventRef = doc(db, "events", editingEventId);
+                    await updateDoc(eventRef, {
+                        name,
+                        image,
+                        price,
+                        about,
+                        structure,
+                        timeline,
+                        rules
+                    });
+                    alert("Event updated successfully!");
+                } else {
+                    // Add new event
+                    await addDoc(collection(db, "events"), {
+                        name,
+                        image,
+                        price,
+                        about,
+                        structure,
+                        timeline,
+                        rules
+                    });
+                    alert("Event uploaded successfully!");
+                }
                 uploadForm.reset();
+                editingEventId = null;  // Reset the editing event ID
+                displayEvents();
             } catch (error) {
-                console.error("Error uploading event: ", error);
+                console.error("Error submitting event: ", error);
             }
         });
+
+        // Display events
+        async function displayEvents() {
+            const eventSnapshot = await getDocs(collection(db, "events"));
+            const eventListData = eventSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            eventList.innerHTML = '';
+            eventListData.forEach(event => {
+                const eventItem = document.createElement("div");
+                eventItem.classList.add("bg-white", "p-4", "rounded", "shadow-md", "space-y-4");
+                eventItem.innerHTML = `
+                    <h3 class="text-lg font-semibold">${event.name}</h3>
+                    <img src="${event.image}" alt="${event.name}" class="w-32 h-32 object-cover rounded">
+                    <p><strong>Price:</strong> ${event.price}</p>
+                    <p><strong>About:</strong> ${event.about}</p>
+                    <button class="bg-yellow-500 text-white px-4 py-2 rounded" onclick="editEvent('${event.id}')">Edit</button>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded" onclick="deleteEvent('${event.id}')">Delete</button>
+                `;
+                eventList.appendChild(eventItem);
+            });
+        }
+
+        // Edit event
+        window.editEvent = async function(id) {
+            const eventRef = doc(db, "events", id);
+            const eventDoc = await getDoc(eventRef);
+            const eventData = eventDoc.data();
+
+            // Pre-fill the form with the existing event data
+            document.getElementById("name").value = eventData.name;
+            document.getElementById("image").value = eventData.image;
+            document.getElementById("price").value = eventData.price;
+            document.getElementById("about").value = eventData.about;
+            document.getElementById("structure").value = eventData.structure;
+            document.getElementById("timeline").value = eventData.timeline;
+            document.getElementById("rules").value = eventData.rules;
+
+            // Set the editingEventId
+            editingEventId = id;
+            alert(`Editing event with ID: ${id}`);
+        };
+
+        // Delete event
+        window.deleteEvent = async function(id) {
+            try {
+                await deleteDoc(doc(db, "events", id));
+                alert("Event deleted successfully!");
+                displayEvents();
+            } catch (error) {
+                console.error("Error deleting event: ", error);
+            }
+        };
+
+        // Initial display of events
+        displayEvents();
     </script>
 
 </body>
