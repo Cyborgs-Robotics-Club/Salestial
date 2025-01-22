@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -33,4 +33,4 @@ if (typeof window !== "undefined") {
 }
 
 // Export Firebase services
-export { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db, signOut, onAuthStateChanged };
+export { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db, signOut, onAuthStateChanged, addDoc, collection, getDocs, doc, getDoc };
