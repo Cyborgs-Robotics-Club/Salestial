@@ -5,13 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salestial - Homepage</title>
+
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         * {
             margin: 0;
@@ -52,13 +54,9 @@
                 <a href="competition.html">
                     <li class="hover:text-gray-500 cursor-pointer">Competition</li>
                 </a>
-                <a href="Accomodation.html">
-                    <li class="hover:text-gray-500 cursor-pointer">Accomodation</li>
-                </a>
                 <a href="contact.html">
                     <li class="hover:text-gray-500 cursor-pointer">Contact</li>
                 </a>
-                <a id="authLink" class="hover:text-gray-500 cursor-pointer">Login</a>
                 <a href="profile.html">
                     <li class="hover:text-gray-500 cursor-pointer">Profile</li>
                 </a>
@@ -90,13 +88,9 @@
                 <a href="competition.html">
                     <li class="text-black hover:text-gray-500 py-2">Competition</li>
                 </a>
-                <a href="Accomodation.html">
-                    <li class="text-black hover:text-gray-500 py-2">Accomodation</li>
-                </a>
                 <a href="contact.html">
                     <li class="text-black hover:text-gray-500 py-2">Contact</li>
                 </a>
-                <a id="mobileAuthLink" class="text-black hover:text-gray-500 cursor-pointer">Login</a>
                 <a href="profile.html">
                     <li class="text-black hover:text-gray-500 py-2">Profile</li>
                 </a>
@@ -113,6 +107,23 @@
                 </a>
             </div>
         </div>
+        <script>
+             const menuButton = document.getElementById('menuButton');
+            const menu = document.getElementById('menu');
+            const closeButton = document.getElementById('closeButton');
+
+            menuButton.addEventListener('click', () => {
+                menu.classList.remove('hidden');
+                menu.classList.remove('translate-x-full');
+            });
+
+            closeButton.addEventListener('click', () => {
+                menu.classList.add('translate-x-full');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 300);
+            });
+        </script>
         <div id="Content" class="h-[90%] w-[100%] bg-gray-100"></div>
     </div>
 
@@ -143,21 +154,6 @@
             }
         });
 
-        const menuButton = document.getElementById('menuButton');
-        const menu = document.getElementById('menu');
-        const closeButton = document.getElementById('closeButton');
-
-        menuButton.addEventListener('click', () => {
-            menu.classList.remove('hidden');
-            menu.classList.remove('translate-x-full');
-        });
-
-        closeButton.addEventListener('click', () => {
-            menu.classList.add('translate-x-full');
-            setTimeout(() => {
-                menu.classList.add('hidden');
-            }, 300);
-        });
     </script>
 </body>
 

@@ -115,9 +115,6 @@
                 <a href="competition.html">
                     <li class="hover:text-gray-500 cursor-pointer">Competition</li>
                 </a>
-                <a href="Accomodation.html">
-                    <li class="hover:text-gray-500 cursor-pointer">Accomodation</li>
-                </a>
                 <a href="contact.html">
                     <li class="hover:text-gray-500 cursor-pointer">Contact</li>
                 </a>
@@ -153,9 +150,6 @@
                 <a href="competition.html">
                     <li class="text-black hover:text-gray-500 py-2">Competition</li>
                 </a>
-                <a href="Accomodation.html">
-                    <li class="text-black hover:text-gray-500 py-2">Accomodation</li>
-                </a>
                 <a href="contact.html">
                     <li class="text-black hover:text-gray-500 py-2">Contact</li>
                 </a>
@@ -176,6 +170,23 @@
                 </a>
             </div>
         </div>
+        <script>
+             const menuButton = document.getElementById('menuButton');
+            const menu = document.getElementById('menu');
+            const closeButton = document.getElementById('closeButton');
+
+            menuButton.addEventListener('click', () => {
+                menu.classList.remove('hidden');
+                menu.classList.remove('translate-x-full');
+            });
+
+            closeButton.addEventListener('click', () => {
+                menu.classList.add('translate-x-full');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 300);
+            });
+        </script>
         <!-- 
         This is a working contact form. To receive email, 
         Replace YOUR_ACCESS_KEY_HERE with your actual Access Key.
