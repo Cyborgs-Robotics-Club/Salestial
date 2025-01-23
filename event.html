@@ -10,7 +10,9 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+        rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -33,6 +35,31 @@
             justify-content: center;
             align-items: center;
             background-color: white;
+        }
+
+        .modal-content {
+            max-height: 90%;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .modal-list {
+            margin-bottom: 10px;
+        }
+
+        .modal-list li {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .modal-list strong {
+            font-weight: bold;
         }
     </style>
 </head>
@@ -130,18 +157,24 @@
         <div id="Content" class="h-[90%] w-[100%] bg-gray-100">
             <h1 class="text-2xl font-bold mb-4">All Events</h1>
             <div id="eventsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                
+
             </div>
-            <div id="eventModal" class="hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 z-50 flex justify-center items-center">
-                <div class="bg-white p-6 rounded shadow-lg w-3/4 max-h-[90%] overflow-y-scroll md:w-1/2">
+            <div id="eventModal"
+                class="hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 z-50 flex justify-center items-center">
+                <div class="modal-content bg-white p-6 rounded shadow-lg w-3/4 max-h-[90%] overflow-y-scroll md:w-1/2">
                     <button id="closeModal" class="float-right text-red-500 font-bold">X</button>
-                    <h2 id="modalTitle" class="text-xl font-bold mb-2"></h2>
+                    <h2 id="modalTitle" class="modal-title"></h2>
                     <img id="modalImage" class="w-full h-48 object-cover mb-4" alt="Event Image">
-                    <p id="modalPrice" class="text-lg text-gray-700 mb-2"></p>
-                    <p id="modalAbout" class="text-sm text-gray-500 mb-2"></p>
-                    <p id="modalStructure" class="text-sm text-gray-500 mb-2"></p>
-                    <p id="modalTimeline" class="text-sm text-gray-500 mb-2"></p>
-                    <p id="modalRules" class="text-sm text-gray-500 mb-2"></p>
+                    <ul class="modal-list">
+                        <li><strong>Price:</strong> <span id="modalPrice"></span></li>
+                        <li><strong>About:</strong> <span id="modalAbout"></span></li>
+                        <li><strong>Structure:</strong> <span id="modalStructure"></span></li>
+                        <li><strong>Timeline:</strong> <span id="modalTimeline"></span></li>
+                        <li><strong>Rules:</strong> <span id="modalRules"></span></li>
+                    </ul>
+                    <div class="flex gap-4 mt-4">
+                        <button class="bg-blue-500 text-white py-2 px-4 rounded" onclick="window.location.href='event_register.html'">Register</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -178,6 +211,10 @@
                         <img src="${event.image}" class="w-full h-48 object-cover mb-4" alt="Event Image">
                         <h3 class="text-xl font-bold">${event.name}</h3>
                         <p class="text-lg text-gray-700"><strong>Price:</strong> ${event.price}</p>
+                        <div class="flex gap-4 mt-4">
+                            <button onclick="openModal(${event})" class="bg-blue-500 text-white py-2 px-4 rounded">Explore</button>
+                            <a href="event_register.html" class="bg-green-500 text-white py-2 px-4 rounded">Register</a>
+                        </div>
                     `;
 
                     eventsContainer.appendChild(eventCard);
@@ -192,10 +229,10 @@
             modalTitle.textContent = event.name;
             modalImage.src = event.image;
             modalPrice.textContent = `Price: ${event.price}`;
-            modalAbout.textContent = `About: ${event.about}`;
-            modalStructure.textContent = `Structure: ${event.structure}`;
-            modalTimeline.textContent = `Timeline: ${event.timeline}`;
-            modalRules.textContent = `Rules: ${event.rules}`;
+            modalAbout.textContent = event.about;
+            modalStructure.textContent = event.structure;
+            modalTimeline.textContent = event.timeline;
+            modalRules.textContent = event.rules;
             eventModal.classList.remove("hidden");
         }
 
