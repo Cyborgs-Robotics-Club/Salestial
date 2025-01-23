@@ -150,7 +150,7 @@
                         <li id="compRules" class="mb-4"></li>
                     </ul>
                     <div class="flex gap-4 mt-4">
-                        <button class="bg-blue-500 text-white py-2 px-4 rounded" onclick="window.location.href='Competition_register.html'">Register</button>
+                        <a href="Competition_register.html?compName=${encodeURIComponent(comp.name)}" class="bg-green-500 text-white px-4 py-2 rounded mt-4 inline-block text-center">Register</a>
                     </div>
                     <button id="closePopup" class="bg-red-500 text-white px-4 py-2 rounded">Close</button>
                 </div>
@@ -158,73 +158,75 @@
         </div>
     </div>
 
-    <script type="module">
-        import { db, collection, getDocs, doc, getDoc } from './firebase.js'; // Import necessary Firebase functions
-        
-        const competitionsContainer = document.getElementById("competitionsContainer");
-        const competitionDetailsPopup = document.getElementById("competitionDetailsPopup");
-        const closePopupButton = document.getElementById("closePopup");
-        
-        async function loadCompetitions() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "competitions"));
-                querySnapshot.forEach(doc => {
-                    const comp = doc.data();
-                    const compId = doc.id;
-        
-                    const compCard = document.createElement("div");
-                    compCard.classList.add("bg-white", "rounded", "shadow-lg", "p-4", "cursor-pointer");
-        
-                    compCard.innerHTML = `
-                        <img src="${comp.image}" class="w-full h-48 object-cover mb-4" alt="Competition Image">
-                        <h3 class="text-xl font-bold">${comp.name}</h3>
-                        <p class="text-lg text-gray-700">${comp.price}</p>
-                        <button class="bg-blue-500 text-white px-4 py-2 rounded mt-4" id="exploreBtn">Explore</button>
-                        <a href="register.html?compId=${compId}" class="bg-green-500 text-white px-4 py-2 rounded mt-4 inline-block text-center">Register</a>
-                    `;
-        
-                    const exploreButton = compCard.querySelector("#exploreBtn");
-                    exploreButton.addEventListener("click", () => openCompetitionDetails(compId));
-        
-                    competitionsContainer.appendChild(compCard);
-                });
-            } catch (error) {
-                console.error("Error fetching competitions: ", error);
-            }
+    <!-- HTML structure remains unchanged -->
+<script type="module">
+    import { db, collection, getDocs } from './firebase.js';
+
+    const competitionsContainer = document.getElementById("competitionsContainer");
+    const competitionDetailsPopup = document.getElementById("competitionDetailsPopup");
+    const closePopupButton = document.getElementById("closePopup");
+
+    async function loadCompetitions() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "competitions"));
+            querySnapshot.forEach((doc) => {
+                const comp = doc.data();
+                const compId = doc.id;
+
+                const compCard = document.createElement("div");
+                compCard.classList.add("bg-white", "rounded", "shadow-lg", "p-4", "cursor-pointer");
+
+                compCard.innerHTML = `
+                    <img src="${comp.image}" class="w-full h-48 object-cover mb-4" alt="Competition Image">
+                    <h3 class="text-xl font-bold">${comp.name}</h3>
+                    <p class="text-lg text-gray-700">Price: ₹${comp.price}</p>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded mt-4" id="exploreBtn">Explore</button>
+                    <a href="register.html?compId=${compId}" class="bg-green-500 text-white px-4 py-2 rounded mt-4 inline-block text-center">Register</a>
+                `;
+
+                const exploreButton = compCard.querySelector("#exploreBtn");
+                exploreButton.addEventListener("click", () => openCompetitionDetails(compId));
+
+                competitionsContainer.appendChild(compCard);
+            });
+        } catch (error) {
+            console.error("Error fetching competitions: ", error);
         }
-        
-        async function openCompetitionDetails(compId) {
-            try {
-                const docRef = doc(db, "competitions", compId);
-                const docSnap = await getDoc(docRef);
-        
-                if (docSnap.exists()) {
-                    const comp = docSnap.data();
-        
-                    document.getElementById("compName").innerText = comp.name;
-                    document.getElementById("compImage").src = comp.image;
-                    document.getElementById("compPrice").innerText = `Price: ${comp.price}`;
-                    document.getElementById("compAbout").innerText = `About: ${comp.about}`;
-                    document.getElementById("compStructure").innerText = `Structure: ${comp.structure}`;
-                    document.getElementById("compTimeline").innerText = `Timeline: ${comp.timeline}`;
-                    document.getElementById("compFaqs").innerText = `FAQs: ${comp.faqs}`;
-                    document.getElementById("compRules").innerText = `Rules: ${comp.rules}`;
-        
-                    competitionDetailsPopup.classList.remove("hidden");
-                } else {
-                    console.log("No such document!");
-                }
-            } catch (error) {
-                console.error("Error fetching competition details: ", error);
+    }
+
+    async function openCompetitionDetails(compId) {
+        try {
+            const docRef = doc(db, "competitions", compId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const comp = docSnap.data();
+
+                document.getElementById("compName").innerText = comp.name;
+                document.getElementById("compImage").src = comp.image;
+                document.getElementById("compPrice").innerText = `Price: ₹${comp.price}`;
+                document.getElementById("compAbout").innerText = `About: ${comp.about}`;
+                document.getElementById("compStructure").innerText = `Structure: ${comp.structure}`;
+                document.getElementById("compTimeline").innerText = `Timeline: ${comp.timeline}`;
+                document.getElementById("compFaqs").innerText = `FAQs: ${comp.faqs}`;
+                document.getElementById("compRules").innerText = `Rules: ${comp.rules}`;
+
+                competitionDetailsPopup.classList.remove("hidden");
+            } else {
+                console.log("No such document!");
             }
+        } catch (error) {
+            console.error("Error fetching competition details: ", error);
         }
-        
-        closePopupButton.addEventListener("click", () => {
-            competitionDetailsPopup.classList.add("hidden");
-        });
-        
-        loadCompetitions();
-    </script>
+    }
+
+    closePopupButton.addEventListener("click", () => {
+        competitionDetailsPopup.classList.add("hidden");
+    });
+
+    loadCompetitions();
+</script>
+
 
     <script type="module">
         import { auth } from './firebase.js';

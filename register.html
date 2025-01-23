@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competition Registration</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f9fafb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .input-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .dropdown,
+        .input {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 0.75rem;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-2xl font-bold mb-6">Competition Registration</h1>
+        <form id="competitionForm">
+            <div class="mb-4">
+                <label for="competitionSelect" class="input-label">Select Competition</label>
+                <select id="competitionSelect" class="dropdown" required>
+                    <option value="" disabled selected>Choose a competition</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="participantName" class="input-label">Participant Name</label>
+                <input type="text" id="participantName" class="input" placeholder="Your Name" required>
+            </div>
+            <div class="mb-4">
+                <label for="email" class="input-label">Email</label>
+                <input type="email" id="email" class="input" placeholder="Your Email" required>
+            </div>
+            <div class="mb-4">
+                <label for="price" class="input-label">Price</label>
+                <input type="text" id="price" class="input" disabled>
+            </div>
+            <button type="submit" class="btn">Register</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs, addDoc, doc, getDoc } from './firebase.js';
+        import { auth } from './firebase.js';
+    
+        const competitionSelect = document.getElementById("competitionSelect");
+        const priceInput = document.getElementById("price");
+        const competitionForm = document.getElementById("competitionForm");
+    
+        // Function to get query parameter from URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+    
+        // Populate dropdown with competitions
+        async function populateCompetitionDropdown(preselectedCompId) {
+            try {
+                console.log("Fetching competitions...");
+                const querySnapshot = await getDocs(collection(db, "competitions"));
+    
+                querySnapshot.forEach((doc) => {
+                    const comp = doc.data();
+                    console.log("Loaded competition:", comp);
+    
+                    const option = document.createElement("option");
+                    option.value = doc.id; // Store competition ID
+                    option.textContent = comp.name;
+                    competitionSelect.appendChild(option);
+    
+                    // Preselect competition if it matches the compId from URL
+                    if (preselectedCompId && preselectedCompId === doc.id) {
+                        competitionSelect.value = preselectedCompId;
+                        console.log("Preselected competition:", comp.name);
+                        updatePrice(preselectedCompId); // Update the price automatically
+                    }
+                });
+    
+                console.log("Dropdown populated successfully.");
+            } catch (error) {
+                console.error("Error fetching competitions:", error);
+                alert("Failed to load competitions. Please check your database connection.");
+            }
+        }
+    
+        // Update price when dropdown changes
+        async function updatePrice(selectedCompId) {
+            if (selectedCompId) {
+                try {
+                    console.log("Fetching price for competition ID:", selectedCompId);
+                    const docRef = doc(db, "competitions", selectedCompId);
+                    const docSnap = await getDoc(docRef);
+    
+                    if (docSnap.exists()) {
+                        const comp = docSnap.data();
+                        console.log("Competition details:", comp);
+                        priceInput.value = `₹${comp.price}`;
+                    } else {
+                        console.warn("No competition found for ID:", selectedCompId);
+                        priceInput.value = "Price not available";
+                    }
+                } catch (error) {
+                    console.error("Error fetching competition details:", error);
+                    alert("Failed to fetch price. Please try again.");
+                }
+            } else {
+                priceInput.value = "";
+            }
+        }
+    
+        // Handle form submission
+        competitionForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+    
+            const selectedCompId = competitionSelect.value;
+            const participantName = document.getElementById("participantName").value;
+            const email = document.getElementById("email").value;
+    
+            if (!selectedCompId) {
+                alert("Please select a competition.");
+                return;
+            }
+    
+            try {
+                console.log("Submitting registration...");
+                const registration = {
+                    compId: selectedCompId,
+                    participantName,
+                    email,
+                    timestamp: new Date(),
+                };
+    
+                await addDoc(collection(db, "registrations"), registration);
+                console.log("Registration successful:", registration);
+                alert("Registration successful!");
+                competitionForm.reset();
+                priceInput.value = ""; // Clear the price field
+            } catch (error) {
+                console.error("Error submitting registration:", error);
+                alert("Error during registration. Please try again.");
+            }
+        });
+    
+        // Ensure user is authenticated
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                console.warn("User not logged in. Redirecting to login...");
+                window.location.href = "login.html";
+            } else {
+                console.log("User authenticated:", user.email);
+            }
+        });
+    
+        // Parse the compId from URL and populate dropdown
+        const preselectedCompId = getQueryParam("compId");
+        console.log("Preselected competition ID from URL:", preselectedCompId);
+        populateCompetitionDropdown(preselectedCompId);
+    </script>
+        
+</body>
+
+</html>
