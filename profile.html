@@ -1,200 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
+    <title>Salestial - Homepage</title>
+
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+        rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        html, body {
+
+        html,
+        body {
             height: 100%;
             width: 100%;
             font-family: "Poppins", sans-serif;
         }
+
         body {
-            background-color: #f3f4f6;
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: white;
         }
     </style>
 </head>
+
 <body>
-    <div id="nav" class="h-[10%] w-full bg-white flex items-center justify-between px-4">
-        <div class="text-black text-xl font-bold">Logo</div>
-        <ul class="hidden md:flex gap-4 text-black">
-            <a href="index.html">
-                <li class="hover:text-gray-500 cursor-pointer">Home</li>
-            </a>
-            <a href="about.html">
-                <li class="hover:text-gray-500 cursor-pointer">About</li>
-            </a>
-            <a href="event.html">
-                <li class="hover:text-gray-500 cursor-pointer">Events</li>
-            </a>
-            <a href="competition.html">
-                <li class="hover:text-gray-500 cursor-pointer">Competition</li>
-            </a>
-            <a href="contact.html">
-                <li class="hover:text-gray-500 cursor-pointer">Contact</li>
-            </a>
-            <a id="authLink" class="hover:text-gray-500 cursor-pointer">Login</a>
-            <a href="profile.html">
-                <li class="hover:text-gray-500 cursor-pointer">Profile</li>
-            </a>
-        </ul>
-        <ul class="hidden md:flex gap-4 text-black text-[25px]">
-            <i class="ri-instagram-line hover:text-gray-500 cursor-pointer"></i>
-            <i class="ri-facebook-circle-line hover:text-gray-500 cursor-pointer"></i>
-            <i class="ri-twitter-line hover:text-gray-500 cursor-pointer"></i>
-        </ul>
-        <button id="menuButton" class="text-black text-3xl md:hidden">
-            <i class="ri-menu-line"></i>
-        </button>
-    </div>
-    <div id="menu"
-        class="hidden flex-col fixed top-0 right-0 h-full w-3/4 bg-white p-4 transform translate-x-full transition-transform duration-300 z-50 md:hidden">
-        <button id="closeButton" class="text-black text-3xl self-end">
-            <i class="ri-close-line"></i>
-        </button>
-        <ul class="mt-8">
-            <a href="index.html">
-                <li class="text-black hover:text-gray-500 py-2">Home</li>
-            </a>
-            <a href="about.html">
-                <li class="text-black hover:text-gray-500 py-2">About</li>
-            </a>
-            <a href="event.html">
-                <li class="text-black hover:text-gray-500 py-2">Events</li>
-            </a>
-            <a href="competition.html">
-                <li class="text-black hover:text-gray-500 py-2">Competition</li>
-            </a>
-            <a href="contact.html">
-                <li class="text-black hover:text-gray-500 py-2">Contact</li>
-            </a>
-            <a id="mobileAuthLink" class="text-black hover:text-gray-500 cursor-pointer">Login</a>
-            <a href="profile.html">
-                <li class="text-black hover:text-gray-500 py-2">Profile</li>
-            </a>
-        </ul>
-        <div class="flex gap-4 mt-4">
-            <a href="#" class="text-black hover:text-gray-500 text-2xl">
-                <i class="ri-instagram-line"></i>
-            </a>
-            <a href="#" class="text-black hover:text-gray-500 text-2xl">
-                <i class="ri-facebook-circle-line"></i>
-            </a>
-            <a href="#" class="text-black hover:text-gray-500 text-2xl">
-                <i class="ri-twitter-line"></i>
-            </a>
-        </div>
-    </div>
-    <script>
-         const menuButton = document.getElementById('menuButton');
-        const menu = document.getElementById('menu');
-        const closeButton = document.getElementById('closeButton');
-
-        menuButton.addEventListener('click', () => {
-            menu.classList.remove('hidden');
-            menu.classList.remove('translate-x-full');
-        });
-
-        closeButton.addEventListener('click', () => {
-            menu.classList.add('translate-x-full');
-            setTimeout(() => {
-                menu.classList.add('hidden');
-            }, 300);
-        });
-    </script>
-    <div class="w-[90%] md:w-[50%] bg-white shadow-lg rounded-lg p-8">
-        <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-700">Profile</h1>
-            <button id="logoutButton" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
-                Logout
+    <div id="Sec-1" class="w-[100vw] h-[100vh] bg-white p-[10%] lg:p-[3%] md:p-[5%] sm:p-[7%] relative">
+        <div id="nav" class="h-[10%] w-full bg-white flex items-center justify-between px-4">
+            <div class="text-black text-xl font-bold">Logo</div>
+            <ul class="hidden md:flex gap-4 text-black">
+                <a href="index.html">
+                    <li class="hover:text-gray-500 cursor-pointer">Home</li>
+                </a>
+                <a href="about.html">
+                    <li class="hover:text-gray-500 cursor-pointer">About</li>
+                </a>
+                <a href="event.html">
+                    <li class="hover:text-gray-500 cursor-pointer">Events</li>
+                </a>
+                <a href="competition.html">
+                    <li class="hover:text-gray-500 cursor-pointer">Competition</li>
+                </a>
+                <a href="contact.html">
+                    <li class="hover:text-gray-500 cursor-pointer">Contact</li>
+                </a>
+                <a href="profile.html">
+                    <li class="hover:text-gray-500 cursor-pointer">Profile</li>
+                </a>
+            </ul>
+            <ul class="hidden md:flex gap-4 text-black text-[25px]">
+                <i class="ri-instagram-line hover:text-gray-500 cursor-pointer"></i>
+                <i class="ri-facebook-circle-line hover:text-gray-500 cursor-pointer"></i>
+                <i class="ri-twitter-line hover:text-gray-500 cursor-pointer"></i>
+            </ul>
+            <button id="menuButton" class="text-black text-3xl md:hidden">
+                <i class="ri-menu-line"></i>
             </button>
         </div>
-        <div id="profileContainer" class="mt-6">
-            <!-- User Info -->
-            <div class="flex flex-col gap-4">
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-800">Name:</h2>
-                    <p id="userName" class="text-gray-600">Loading...</p>
+        <div id="menu"
+            class="hidden flex-col fixed top-0 right-0 h-full w-3/4 bg-white p-4 transform translate-x-full transition-transform duration-300 z-50 md:hidden">
+            <button id="closeButton" class="text-black text-3xl self-end">
+                <i class="ri-close-line"></i>
+            </button>
+            <ul class="mt-8">
+                <a href="index.html">
+                    <li class="text-black hover:text-gray-500 py-2">Home</li>
+                </a>
+                <a href="about.html">
+                    <li class="text-black hover:text-gray-500 py-2">About</li>
+                </a>
+                <a href="event.html">
+                    <li class="text-black hover:text-gray-500 py-2">Events</li>
+                </a>
+                <a href="competition.html">
+                    <li class="text-black hover:text-gray-500 py-2">Competition</li>
+                </a>
+                <a href="contact.html">
+                    <li class="text-black hover:text-gray-500 py-2">Contact</li>
+                </a>
+                <a href="profile.html">
+                    <li class="text-black hover:text-gray-500 py-2">Profile</li>
+                </a>
+            </ul>
+            <div class="flex gap-4 mt-4">
+                <a href="#" class="text-black hover:text-gray-500 text-2xl">
+                    <i class="ri-instagram-line"></i>
+                </a>
+                <a href="#" class="text-black hover:text-gray-500 text-2xl">
+                    <i class="ri-facebook-circle-line"></i>
+                </a>
+                <a href="#" class="text-black hover:text-gray-500 text-2xl">
+                    <i class="ri-twitter-line"></i>
+                </a>
+            </div>
+        </div>
+        <script>
+            const menuButton = document.getElementById('menuButton');
+            const menu = document.getElementById('menu');
+            const closeButton = document.getElementById('closeButton');
+
+            menuButton.addEventListener('click', () => {
+                menu.classList.remove('hidden');
+                menu.classList.remove('translate-x-full');
+            });
+
+            closeButton.addEventListener('click', () => {
+                menu.classList.add('translate-x-full');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 300);
+            });
+        </script>
+        <div id="Content" class="h-[90%] w-[100%] bg-gray-100">
+            <div class="w-[90%] md:w-[50%] bg-white shadow-lg rounded-lg p-8">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-gray-700">Profile</h1>
+                    <button id="logoutButton"
+                        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                        Logout
+                    </button>
                 </div>
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-800">Email:</h2>
-                    <p id="userEmail" class="text-gray-600">Loading...</p>
-                </div>
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-800">User ID:</h2>
-                    <p id="userId" class="text-gray-600">Loading...</p>
+                <div id="profileContainer" class="mt-6">
+                    <!-- User Info -->
+                    <div class="flex flex-col gap-4">
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-800">Name:</h2>
+                            <p id="userName" class="text-gray-600">Loading...</p>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-800">Email:</h2>
+                            <p id="userEmail" class="text-gray-600">Loading...</p>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-800">User ID:</h2>
+                            <p id="userId" class="text-gray-600">Loading...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <script type="module">
+                import { auth, db } from './firebase.js'; // Ensure correct import
+                import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+                const userName = document.getElementById('userName');
+                const userEmail = document.getElementById('userEmail');
+                const userId = document.getElementById('userId');
+                const logoutButton = document.getElementById('logoutButton');
+
+                // Function to fetch user data from Firestore
+                // Function to fetch user data from Firestore
+                const fetchUserData = async (userId) => {
+                    try {
+                        // Ensure the Firestore path is correctly specified
+                        const userDocRef = doc(db, 'users', userId); // 'users' is the collection name
+                        const docSnap = await getDoc(userDocRef);
+
+                        if (docSnap.exists()) {
+                            const userData = docSnap.data();
+                            userName.textContent = userData.name || "Not Available";
+                            userEmail.textContent = userData.email || "Not Available";
+                        } else {
+                            console.log("No user document found!");
+                            userName.textContent = "No additional user data found!";
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                        userName.textContent = "Error loading user data.";
+                    }
+                };
+
+                // Listen for Auth state changes
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        // Fetch name from Firebase Authentication
+                        userName.textContent = user.displayName || "Name not set";
+                        userEmail.textContent = user.email;
+                        userId.textContent = user.uid;
+                    } else {
+                        // Redirect to login if user is not authenticated
+                        window.location.href = 'login.html';
+                    }
+                });
+
+                // Handle logout
+                logoutButton.addEventListener('click', async () => {
+                    try {
+                        await auth.signOut();
+                        window.location.href = 'login.html';
+                    } catch (error) {
+                        console.error('Error signing out:', error);
+                    }
+                });
+            </script>
         </div>
     </div>
 
     <script type="module">
-        import { auth, db } from './firebase.js'; // Ensure correct import
-        import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
-    
-        const userName = document.getElementById('userName');
-        const userEmail = document.getElementById('userEmail');
-        const userId = document.getElementById('userId');
-        const logoutButton = document.getElementById('logoutButton');
-    
-        // Function to fetch user data from Firestore
-        // Function to fetch user data from Firestore
-        const fetchUserData = async (userId) => {
-            try {
-                // Ensure the Firestore path is correctly specified
-                const userDocRef = doc(db, 'users', userId); // 'users' is the collection name
-                const docSnap = await getDoc(userDocRef);
+        import { auth } from './firebase.js';
 
-                if (docSnap.exists()) {
-                    const userData = docSnap.data();
-                    userName.textContent = userData.name || "Not Available";
-                    userEmail.textContent = userData.email || "Not Available";
-                } else {
-                    console.log("No user document found!");
-                    userName.textContent = "No additional user data found!";
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-                userName.textContent = "Error loading user data.";
-            }
-        };
+        const authLink = document.getElementById('authLink');
+        const mobileAuthLink = document.getElementById('mobileAuthLink');
 
-        // Listen for Auth state changes
         auth.onAuthStateChanged((user) => {
-    if (user) {
-        // Fetch name from Firebase Authentication
-        userName.textContent = user.displayName || "Name not set";
-        userEmail.textContent = user.email;
-        userId.textContent = user.uid;
-    } else {
-        // Redirect to login if user is not authenticated
-        window.location.href = 'login.html';
-    }
-});
-    
-        // Handle logout
-        logoutButton.addEventListener('click', async () => {
-            try {
-                await auth.signOut();
-                window.location.href = 'login.html';
-            } catch (error) {
-                console.error('Error signing out:', error);
+            if (!user) {
+                authLink.textContent = "Login";
+                authLink.href = "login.html";
+                mobileAuthLink.textContent = "Login";
+                mobileAuthLink.href = "login.html";
+            } else {
+                authLink.textContent = "Logout";
+                authLink.href = "#";
+                mobileAuthLink.textContent = "Logout";
+                mobileAuthLink.href = "#";
+
+                authLink.addEventListener('click', () => {
+                    auth.signOut();
+                });
+                mobileAuthLink.addEventListener('click', () => {
+                    auth.signOut();
+                });
             }
         });
+
     </script>
 </body>
+
 </html>
