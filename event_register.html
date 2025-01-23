@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f9fafb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .input-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .dropdown,
+        .input {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 0.75rem;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-2xl font-bold mb-6">Event Registration</h1>
+        <form id="eventForm">
+            <div class="mb-4">
+                <label for="eventSelect" class="input-label">Select Event</label>
+                <select id="eventSelect" class="dropdown" required>
+                    <option value="" disabled selected>Choose an event</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="participantName" class="input-label">Participant Name</label>
+                <input type="text" id="participantName" class="input" placeholder="Your Name" required>
+            </div>
+            <div class="mb-4">
+                <label for="email" class="input-label">Email</label>
+                <input type="email" id="email" class="input" placeholder="Your Email" required>
+            </div>
+            <div class="mb-4">
+                <label for="price" class="input-label">Price</label>
+                <input type="text" id="price" class="input" disabled>
+            </div>
+            <button type="submit" class="btn">Register</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs, getDoc, doc, addDoc } from './firebase.js';
+    
+        const eventSelect = document.getElementById("eventSelect");
+        const priceInput = document.getElementById("price");
+        const eventForm = document.getElementById("eventForm");
+    
+        // Function to get query parameter from URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+    
+        // Populate dropdown with events
+        async function populateEventDropdown(preselectedEventId) {
+            try {
+                const querySnapshot = await getDocs(collection(db, "events"));
+                let selected = false; // Variable to check if we preselect the event
+    
+                querySnapshot.forEach((doc) => {
+                    const event = doc.data();
+                    const option = document.createElement("option");
+                    option.value = doc.id; // Store event ID
+                    option.textContent = event.name;
+                    eventSelect.appendChild(option);
+    
+                    // Preselect event if it matches the eventId from URL
+                    if (preselectedEventId && preselectedEventId === doc.id) {
+                        eventSelect.value = preselectedEventId;
+                        updatePrice(preselectedEventId); // Update the price automatically
+                        selected = true;
+                    }
+                });
+    
+                // If the preselectedEventId is not found, clear the price
+                if (!selected) {
+                    priceInput.value = "";
+                }
+            } catch (error) {
+                console.error("Error fetching events:", error);
+                alert("Failed to load events. Please check your database connection.");
+            }
+        }
+    
+        // Update price when dropdown changes
+        async function updatePrice(selectedEventId) {
+            if (selectedEventId) {
+                try {
+                    const docRef = doc(db, "events", selectedEventId);
+                    const docSnap = await getDoc(docRef);
+    
+                    if (docSnap.exists()) {
+                        const event = docSnap.data();
+                        priceInput.value = `₹${event.price}`;
+                    } else {
+                        priceInput.value = "Price not available";
+                    }
+                } catch (error) {
+                    console.error("Error fetching event details:", error);
+                    alert("Failed to fetch price. Please try again.");
+                }
+            } else {
+                priceInput.value = "";
+            }
+        }
+    
+        // Handle form submission
+        eventForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+    
+            const selectedEventId = eventSelect.value;
+            const participantName = document.getElementById("participantName").value;
+            const email = document.getElementById("email").value;
+    
+            if (!selectedEventId) {
+                alert("Please select an event.");
+                return;
+            }
+    
+            try {
+                const registration = {
+                    eventId: selectedEventId,
+                    participantName,
+                    email,
+                    timestamp: new Date(),
+                };
+    
+                await addDoc(collection(db, "eventRegistrations"), registration);
+                alert("Registration successful!");
+                eventForm.reset();
+                priceInput.value = ""; // Clear the price field
+            } catch (error) {
+                console.error("Error submitting registration:", error);
+                alert("Error during registration. Please try again.");
+            }
+        });
+
+        
+    
+        // Parse the eventId from URL and populate dropdown
+        const preselectedEventId = getQueryParam("eventId");
+        populateEventDropdown(preselectedEventId);
+    
+        // Update price when the dropdown selection changes
+        eventSelect.addEventListener("change", (event) => {
+            const selectedEventId = event.target.value;
+            updatePrice(selectedEventId);
+        });
+    </script>
+    
+
+</body>
+
+</html>

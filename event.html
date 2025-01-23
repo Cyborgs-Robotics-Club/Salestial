@@ -173,7 +173,7 @@
                         <li><strong>Rules:</strong> <span id="modalRules"></span></li>
                     </ul>
                     <div class="flex gap-4 mt-4">
-                        <button class="bg-blue-500 text-white py-2 px-4 rounded" onclick="window.location.href='event_register.html'">Register</button>
+                        <a href="event_register.html?eventId=${encodeURIComponent(docSnapshot.id)}" class="bg-green-500 text-white py-2 px-4 rounded">Register</a>
                     </div>
                 </div>
             </div>
@@ -194,6 +194,7 @@
         const modalStructure = document.getElementById("modalStructure");
         const modalTimeline = document.getElementById("modalTimeline");
         const modalRules = document.getElementById("modalRules");
+        
 
         // Function to load all events from Firestore
         async function loadEvents() {
