@@ -128,7 +128,7 @@
                 }, 300);
             });
         </script>
-        
+
         <div id="Content" class="h-[90%] w-[100%] bg-gray-100">
             <h1 class="text-2xl font-bold mb-4">Competitions</h1>
 
@@ -231,6 +231,39 @@
 
         // Load the competitions when the page loads
         loadCompetitions();
+    </script>
+
+    <script type="module">
+        import { auth } from './firebase.js';
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = "login.html";
+            }
+        });
+
+        const authLink = document.getElementById('authLink');
+        const mobileAuthLink = document.getElementById('mobileAuthLink');
+
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                authLink.textContent = "Login";
+                authLink.href = "login.html";
+                mobileAuthLink.textContent = "Login";
+                mobileAuthLink.href = "login.html";
+            } else {
+                authLink.textContent = "Logout";
+                authLink.href = "#";
+                mobileAuthLink.textContent = "Logout";
+                mobileAuthLink.href = "#";
+
+                authLink.addEventListener('click', () => {
+                    auth.signOut();
+                });
+                mobileAuthLink.addEventListener('click', () => {
+                    auth.signOut();
+                });
+            }
+        });
     </script>
 
 </body>

@@ -72,7 +72,7 @@
                 <i class="ri-menu-line"></i>
             </button>
         </div>
-        
+
         <div id="menu"
             class="hidden flex-col fixed top-0 right-0 h-full w-3/4 bg-white p-4 transform translate-x-full transition-transform duration-300 z-50 md:hidden">
             <button id="closeButton" class="text-black text-3xl self-end">
@@ -110,7 +110,7 @@
                 </a>
             </div>
         </div>
-        
+
         <script>
             const menuButton = document.getElementById('menuButton');
             const menu = document.getElementById('menu');
@@ -128,7 +128,7 @@
                 }, 300);
             });
         </script>
-        
+
         <div id="Content" class="h-[90%] w-[100%] bg-gray-100">
             <div class="w-[90%] md:w-[50%] bg-white shadow-lg rounded-lg p-8">
                 <div class="flex justify-between items-center">
@@ -216,6 +216,11 @@
 
     <script type="module">
         import { auth } from './firebase.js';
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = "login.html";
+            }
+        });
 
         const authLink = document.getElementById('authLink');
         const mobileAuthLink = document.getElementById('mobileAuthLink');
@@ -240,7 +245,6 @@
                 });
             }
         });
-
     </script>
 </body>
 
