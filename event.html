@@ -173,7 +173,7 @@
                         <li><strong>Rules:</strong> <span id="modalRules"></span></li>
                     </ul>
                     <div class="flex gap-4 mt-4">
-                        <a href="event_register.html?eventId=${encodeURIComponent(docSnapshot.id)}" class="bg-green-500 text-white py-2 px-4 rounded">Register</a>
+                        <a id="registerLink" href="#" class="bg-green-500 text-white py-2 px-4 rounded">Register</a>
                     </div>
                 </div>
             </div>
@@ -194,7 +194,7 @@
         const modalStructure = document.getElementById("modalStructure");
         const modalTimeline = document.getElementById("modalTimeline");
         const modalRules = document.getElementById("modalRules");
-        
+        const registerLink = document.getElementById("registerLink");
 
         // Function to load all events from Firestore
         async function loadEvents() {
@@ -214,7 +214,7 @@
                         <p class="text-lg text-gray-700"><strong>Price:</strong> ${event.price}</p>
                         <div class="flex gap-4 mt-4">
                             <button onclick="openModal(${event})" class="bg-blue-500 text-white py-2 px-4 rounded">Explore</button>
-                            <a href="event_register.html" class="bg-green-500 text-white py-2 px-4 rounded">Register</a>
+                            <a href="event_register.html?eventName=${encodeURIComponent(event.name)}" class="bg-green-500 text-white py-2 px-4 rounded">Register</a>
                         </div>
                     `;
 
@@ -234,6 +234,7 @@
             modalStructure.textContent = event.structure;
             modalTimeline.textContent = event.timeline;
             modalRules.textContent = event.rules;
+            registerLink.href = `event_register.html?eventName=${encodeURIComponent(event.name)}`;
             eventModal.classList.remove("hidden");
         }
 
