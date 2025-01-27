@@ -133,7 +133,7 @@
 
                     const option = document.createElement("option");
                     option.value = doc.id; // Store competition ID
-                    option.textContent = comp.name;
+                    option.textContent = comp.name; // Display competition name
                     competitionSelect.appendChild(option);
 
                     // Preselect competition if it matches the compId from URL
@@ -176,12 +176,11 @@
             }
         }
 
-        // Handle form submission
-        // Handle form submission
         competitionForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const selectedCompId = competitionSelect.value;
+            const selectedCompName = competitionSelect.options[competitionSelect.selectedIndex].text;
             const leaderName = document.getElementById("leaderName").value;
             const leaderMobile = document.getElementById("leaderMobile").value;
             const leaderEmail = document.getElementById("leaderEmail").value;
@@ -205,17 +204,18 @@
                 return;
             }
 
-            const registration = {
-                compId: selectedCompId,
-                leader: { name: leaderName, mobile: leaderMobile, email: leaderEmail },
-                teamMembers,
-                timestamp: new Date(),
-            };
-
             if (!selectedCompId) {
                 alert("Please select a competition.");
                 return;
             }
+
+            const registration = {
+                compId: selectedCompId,
+                compName: selectedCompName, // Store competition name
+                leader: { name: leaderName, mobile: leaderMobile, email: leaderEmail },
+                teamMembers,
+                timestamp: new Date(),
+            };
 
             try {
                 console.log("Submitting registration...");
@@ -230,16 +230,6 @@
             }
         });
 
-
-        // Ensure user is authenticated
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                console.warn("User not logged in. Redirecting to login...");
-                window.location.href = "login.html";
-            } else {
-                console.log("User authenticated:", user.email);
-            }
-        });
 
         // Parse the compId from URL and populate dropdown
         const preselectedCompId = getQueryParam("compId");

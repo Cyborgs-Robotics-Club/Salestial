@@ -49,20 +49,33 @@
     </div>
 
     <script type="module">
-        import { db, collection, getDocs } from './firebase.js';
+        import { db, collection, getDocs, doc, getDoc } from './firebase.js';
 
         const registrationData = document.getElementById("registrationData");
+
+        async function fetchCompetitionName(compId) {
+            try {
+                const compDoc = await getDoc(doc(db, "competitions", compId));
+                return compDoc.exists() ? compDoc.data().name : "Unknown Competition";
+            } catch (error) {
+                console.error("Error fetching competition name:", error);
+                return "Error fetching name";
+            }
+        }
 
         async function fetchRegistrations() {
             try {
                 const querySnapshot = await getDocs(collection(db, "registrations"));
-                querySnapshot.forEach((doc) => {
+                querySnapshot.forEach(async (doc) => {
                     const registration = doc.data();
+
+                    // Fetch competition name using compId
+                    const competitionName = await fetchCompetitionName(registration.compId);
 
                     // Create a row for each registration
                     const row = document.createElement("tr");
                     row.innerHTML = `
-                        <td class="px-4 py-2">${registration.compId}</td>
+                        <td class="px-4 py-2">${competitionName}</td>
                         <td class="px-4 py-2">${registration.leader.name}</td>
                         <td class="px-4 py-2">${registration.leader.mobile}</td>
                         <td class="px-4 py-2">${registration.leader.email}</td>
