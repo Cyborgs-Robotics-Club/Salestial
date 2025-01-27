@@ -105,7 +105,7 @@
         </form>
     </div>
 
-    
+
 
     <script type="module">
         import { db, collection, getDocs, addDoc, doc, getDoc } from './firebase.js';
@@ -177,6 +177,7 @@
         }
 
         // Handle form submission
+        // Handle form submission
         competitionForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
@@ -208,8 +209,6 @@
                 compId: selectedCompId,
                 leader: { name: leaderName, mobile: leaderMobile, email: leaderEmail },
                 teamMembers,
-                participantName,
-                email,
                 timestamp: new Date(),
             };
 
@@ -220,13 +219,6 @@
 
             try {
                 console.log("Submitting registration...");
-                const registration = {
-                    compId: selectedCompId,
-                    participantName,
-                    email,
-                    timestamp: new Date(),
-                };
-
                 await addDoc(collection(db, "registrations"), registration);
                 console.log("Registration successful:", registration);
                 alert("Registration successful!");
@@ -237,6 +229,7 @@
                 alert("Error during registration. Please try again.");
             }
         });
+
 
         // Ensure user is authenticated
         auth.onAuthStateChanged((user) => {

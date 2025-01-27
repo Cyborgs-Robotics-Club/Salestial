@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Competitions</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-semibold text-center mb-8">Registered Competitions</h1>
+        
+        <table class="table-auto w-full">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2">Competition</th>
+                    <th class="px-4 py-2">Leader Name</th>
+                    <th class="px-4 py-2">Leader Mobile</th>
+                    <th class="px-4 py-2">Leader Email</th>
+                    <th class="px-4 py-2">Members</th>
+                </tr>
+            </thead>
+            <tbody id="registrationData">
+                <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs } from './firebase.js';
+
+        const registrationData = document.getElementById("registrationData");
+
+        async function fetchRegistrations() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "registrations"));
+                querySnapshot.forEach((doc) => {
+                    const registration = doc.data();
+
+                    // Create a row for each registration
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td class="px-4 py-2">${registration.compId}</td>
+                        <td class="px-4 py-2">${registration.leader.name}</td>
+                        <td class="px-4 py-2">${registration.leader.mobile}</td>
+                        <td class="px-4 py-2">${registration.leader.email}</td>
+                        <td class="px-4 py-2">${registration.teamMembers.map(member => `${member.name}, ${member.mobile}, ${member.email}`).join('<br>')}</td>
+                    `;
+                    registrationData.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching registrations:", error);
+            }
+        }
+
+        // Call the function to fetch and display data
+        fetchRegistrations();
+    </script>
+</body>
+
+</html>
