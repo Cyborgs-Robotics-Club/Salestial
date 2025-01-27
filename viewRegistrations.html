@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Registrations</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f9fafb;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin: 3rem auto;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f1f5f9;
+        }
+
+        tr:hover {
+            background-color: #e5e7eb;
+        }
+
+        td {
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            th, td {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-semibold mb-6">Event Registrations</h1>
+
+        <div class="table-container">
+            <table class="table-auto w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Event</th>
+                        <th class="px-4 py-2">Participant Name</th>
+                        <th class="px-4 py-2">Email</th>
+                        <th class="px-4 py-2">Price</th>
+                    </tr>
+                </thead>
+                <tbody id="registrationsData">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db, collection, getDocs } from './firebase.js';
+
+        const registrationsData = document.getElementById("registrationsData");
+
+        async function fetchRegistrations() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "event-registrations"));
+                querySnapshot.forEach((doc) => {
+                    const registration = doc.data();
+
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td class="px-4 py-2">${registration.event}</td>
+                        <td class="px-4 py-2">${registration.participantName}</td>
+                        <td class="px-4 py-2">${registration.email}</td>
+                        <td class="px-4 py-2">${registration.price}</td>
+                    `;
+                    registrationsData.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching registrations:", error);
+            }
+        }
+
+        fetchRegistrations();
+    </script>
+</body>
+
+</html>

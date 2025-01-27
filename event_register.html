@@ -166,7 +166,7 @@
 
             try {
                 // Add form data to Firestore under the 'registrations' collection
-                const docRef = await addDoc(collection(db, "registrations"), eventRegistration);
+                const docRef = await addDoc(collection(db, "event-registrations"), eventRegistration);
                 console.log("Document written with ID: ", docRef.id);
 
                 // Optionally, show a success message or redirect to another page
