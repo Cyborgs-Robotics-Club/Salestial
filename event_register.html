@@ -95,8 +95,9 @@
     </div>
 
     <script type="module">
-        import { db, collection, getDocs } from './firebase.js';
+        import { db, collection, addDoc, getDocs } from './firebase.js';
 
+        const eventForm = document.getElementById("eventForm");
         const eventSelect = document.getElementById("eventSelect");
         const priceInput = document.getElementById("price");
 
@@ -144,6 +145,36 @@
                 console.error("Error loading events: ", error);
             }
         }
+
+        // Event handler to submit form data to Firestore
+        eventForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const participantName = document.getElementById("participantName").value;
+            const email = document.getElementById("email").value;
+            const selectedEvent = document.getElementById("eventSelect").value;
+            const price = document.getElementById("price").value;
+
+            // Create an object for the form data
+            const eventRegistration = {
+                participantName,
+                email,
+                event: selectedEvent,
+                price,
+                timestamp: new Date()
+            };
+
+            try {
+                // Add form data to Firestore under the 'registrations' collection
+                const docRef = await addDoc(collection(db, "registrations"), eventRegistration);
+                console.log("Document written with ID: ", docRef.id);
+
+                // Optionally, show a success message or redirect to another page
+                alert("Registration successful!");
+            } catch (error) {
+                console.error("Error adding document: ", error);
+            }
+        });
 
         // Call the function to populate the dropdown
         populateDropdown();
