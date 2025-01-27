@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Competition Registration</title>
-
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * {
@@ -18,7 +15,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: "Poppins", sans-serif;
             background-color: #f9fafb;
@@ -27,7 +23,6 @@
             align-items: center;
             height: 100vh;
         }
-
         .container {
             background: white;
             border-radius: 12px;
@@ -36,12 +31,10 @@
             width: 90%;
             max-width: 500px;
         }
-
         .input-label {
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
-
         .dropdown,
         .input {
             border: 1px solid #d1d5db;
@@ -50,7 +43,6 @@
             width: 100%;
             font-size: 1rem;
         }
-
         .btn {
             background-color: #3b82f6;
             color: white;
@@ -61,13 +53,11 @@
             margin-top: 1rem;
             cursor: pointer;
         }
-
         .btn:hover {
             background-color: #2563eb;
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <h1 class="text-2xl font-bold mb-6">Competition Registration</h1>
@@ -93,7 +83,6 @@
             <button type="submit" class="btn">Register</button>
         </form>
     </div>
-
     <script type="module">
         import { db, collection, getDocs, addDoc, doc, getDoc } from './firebase.js';
         import { auth } from './firebase.js';
@@ -213,5 +202,4 @@
     </script>
         
 </body>
-
 </html>
