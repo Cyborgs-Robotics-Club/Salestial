@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://apis.google.com/js/api.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * {
@@ -23,7 +26,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
 
         .container {
@@ -69,7 +72,7 @@
 <body>
     <div class="container">
         <h1 class="text-2xl font-bold mb-6">Competition Registration</h1>
-        <form id="competitionForm">
+        <form id="competitionForm" class="">
             <div class="mb-4">
                 <label for="competitionSelect" class="input-label">Select Competition</label>
                 <select id="competitionSelect" class="dropdown" required>
@@ -101,6 +104,9 @@
             <button type="submit" class="btn">Register</button>
         </form>
     </div>
+
+    
+
     <script type="module">
         import { db, collection, getDocs, addDoc, doc, getDoc } from './firebase.js';
         import { auth } from './firebase.js';
