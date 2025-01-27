@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: "Poppins", sans-serif;
             background-color: #f9fafb;
@@ -23,6 +25,7 @@
             align-items: center;
             height: 100vh;
         }
+
         .container {
             background: white;
             border-radius: 12px;
@@ -31,10 +34,12 @@
             width: 90%;
             max-width: 500px;
         }
+
         .input-label {
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
+
         .dropdown,
         .input {
             border: 1px solid #d1d5db;
@@ -43,6 +48,7 @@
             width: 100%;
             font-size: 1rem;
         }
+
         .btn {
             background-color: #3b82f6;
             color: white;
@@ -53,11 +59,13 @@
             margin-top: 1rem;
             cursor: pointer;
         }
+
         .btn:hover {
             background-color: #2563eb;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1 class="text-2xl font-bold mb-6">Competition Registration</h1>
@@ -69,13 +77,23 @@
                 </select>
             </div>
             <div class="mb-4">
-                <label for="participantName" class="input-label">Participant Name</label>
-                <input type="text" id="participantName" class="input" placeholder="Your Name" required>
+                <label for="leaderName" class="input-label">Leader Name</label>
+                <input type="text" id="leaderName" class="input" placeholder="Leader Name" required>
             </div>
             <div class="mb-4">
-                <label for="email" class="input-label">Email</label>
-                <input type="email" id="email" class="input" placeholder="Your Email" required>
+                <label for="leaderMobile" class="input-label">Leader Mobile No.</label>
+                <input type="tel" id="leaderMobile" class="input" placeholder="Mobile No." required>
             </div>
+            <div class="mb-4">
+                <label for="leaderEmail" class="input-label">Leader Email</label>
+                <input type="email" id="leaderEmail" class="input" placeholder="Leader Email" required>
+            </div>
+            <div class="mb-4" id="membersContainer">
+                <label class="input-label">Team Members</label>
+                <div id="memberInputs"></div>
+                <button type="button" id="addMemberBtn" class="btn">Add Member</button>
+            </div>
+
             <div class="mb-4">
                 <label for="price" class="input-label">Price</label>
                 <input type="text" id="price" class="input" disabled>
@@ -86,32 +104,32 @@
     <script type="module">
         import { db, collection, getDocs, addDoc, doc, getDoc } from './firebase.js';
         import { auth } from './firebase.js';
-    
+
         const competitionSelect = document.getElementById("competitionSelect");
         const priceInput = document.getElementById("price");
         const competitionForm = document.getElementById("competitionForm");
-    
+
         // Function to get query parameter from URL
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
-    
+
         // Populate dropdown with competitions
         async function populateCompetitionDropdown(preselectedCompId) {
             try {
                 console.log("Fetching competitions...");
                 const querySnapshot = await getDocs(collection(db, "competitions"));
-    
+
                 querySnapshot.forEach((doc) => {
                     const comp = doc.data();
                     console.log("Loaded competition:", comp);
-    
+
                     const option = document.createElement("option");
                     option.value = doc.id; // Store competition ID
                     option.textContent = comp.name;
                     competitionSelect.appendChild(option);
-    
+
                     // Preselect competition if it matches the compId from URL
                     if (preselectedCompId && preselectedCompId === doc.id) {
                         competitionSelect.value = preselectedCompId;
@@ -119,14 +137,14 @@
                         updatePrice(preselectedCompId); // Update the price automatically
                     }
                 });
-    
+
                 console.log("Dropdown populated successfully.");
             } catch (error) {
                 console.error("Error fetching competitions:", error);
                 alert("Failed to load competitions. Please check your database connection.");
             }
         }
-    
+
         // Update price when dropdown changes
         async function updatePrice(selectedCompId) {
             if (selectedCompId) {
@@ -134,7 +152,7 @@
                     console.log("Fetching price for competition ID:", selectedCompId);
                     const docRef = doc(db, "competitions", selectedCompId);
                     const docSnap = await getDoc(docRef);
-    
+
                     if (docSnap.exists()) {
                         const comp = docSnap.data();
                         console.log("Competition details:", comp);
@@ -151,20 +169,49 @@
                 priceInput.value = "";
             }
         }
-    
+
         // Handle form submission
         competitionForm.addEventListener("submit", async (event) => {
             event.preventDefault();
-    
+
             const selectedCompId = competitionSelect.value;
-            const participantName = document.getElementById("participantName").value;
-            const email = document.getElementById("email").value;
-    
+            const leaderName = document.getElementById("leaderName").value;
+            const leaderMobile = document.getElementById("leaderMobile").value;
+            const leaderEmail = document.getElementById("leaderEmail").value;
+
+            const teamMembers = Array.from(memberInputs.children).map((memberDiv) => {
+                const inputs = memberDiv.querySelectorAll("input");
+                return {
+                    name: inputs[0].value,
+                    mobile: inputs[1].value,
+                    email: inputs[2].value,
+                };
+            });
+
+            if (!leaderName || !leaderMobile || !leaderEmail) {
+                alert("Please fill in all leader details.");
+                return;
+            }
+
+            if (teamMembers.length > 0 && teamMembers.some((member) => !member)) {
+                alert("Please fill in all member names or remove empty member fields.");
+                return;
+            }
+
+            const registration = {
+                compId: selectedCompId,
+                leader: { name: leaderName, mobile: leaderMobile, email: leaderEmail },
+                teamMembers,
+                participantName,
+                email,
+                timestamp: new Date(),
+            };
+
             if (!selectedCompId) {
                 alert("Please select a competition.");
                 return;
             }
-    
+
             try {
                 console.log("Submitting registration...");
                 const registration = {
@@ -173,7 +220,7 @@
                     email,
                     timestamp: new Date(),
                 };
-    
+
                 await addDoc(collection(db, "registrations"), registration);
                 console.log("Registration successful:", registration);
                 alert("Registration successful!");
@@ -184,7 +231,7 @@
                 alert("Error during registration. Please try again.");
             }
         });
-    
+
         // Ensure user is authenticated
         auth.onAuthStateChanged((user) => {
             if (!user) {
@@ -194,12 +241,74 @@
                 console.log("User authenticated:", user.email);
             }
         });
-    
+
         // Parse the compId from URL and populate dropdown
         const preselectedCompId = getQueryParam("compId");
         console.log("Preselected competition ID from URL:", preselectedCompId);
         populateCompetitionDropdown(preselectedCompId);
+
+        const membersContainer = document.getElementById("membersContainer");
+        const memberInputs = document.getElementById("memberInputs");
+        const addMemberBtn = document.getElementById("addMemberBtn");
+
+        let members = [];
+
+        // Add new member
+        function addMember() {
+            if (members.length >= 3) {
+                alert("Maximum 3 additional members can be added.");
+                return;
+            }
+
+            const memberId = members.length + 2; // Start numbering from 2
+            const memberInput = document.createElement("div");
+            memberInput.className = "mb-4";
+            memberInput.id = `member-${memberId}`;
+            memberInput.innerHTML = `
+        <div class="mb-2">
+            <input type="text" class="input mb-1" placeholder="Member ${memberId} Name" required>
+            <input type="tel" class="input mb-1" placeholder="Member ${memberId} Mobile No." required>
+            <input type="email" class="input mb-1" placeholder="Member ${memberId} Email" required>
+        </div>
+        <button type="button" class="btn bg-red-500 text-white px-2 py-1 rounded" onclick="removeMember(${memberId})">Delete</button>
+    `;
+            memberInputs.appendChild(memberInput);
+            members.push(memberId);
+        }
+
+        // Remove a member
+        function removeMember(memberId) {
+            const memberToRemove = document.getElementById(`member-${memberId}`);
+            if (memberToRemove) {
+                memberInputs.removeChild(memberToRemove); // Remove the member's inputs
+                renumberMembers(); // Renumber all remaining members
+            }
+        }
+
+        // Make the function accessible globally
+        window.removeMember = removeMember;
+
+
+
+        function renumberMembers() {
+            members = [];
+            const allInputs = Array.from(memberInputs.children);
+            allInputs.forEach((inputDiv, index) => {
+                inputDiv.id = `member-${index + 2}`;
+                const inputs = inputDiv.querySelectorAll("input");
+                inputs[0].placeholder = `Member ${index + 2} Name`;
+                inputs[1].placeholder = `Member ${index + 2} Mobile No.`;
+                inputs[2].placeholder = `Member ${index + 2} Email`;
+                members.push(index + 2);
+            });
+        }
+
+
+        // Event listener for adding members
+        addMemberBtn.addEventListener("click", addMember);
+
     </script>
-        
+
 </body>
+
 </html>
