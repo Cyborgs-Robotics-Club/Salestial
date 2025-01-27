@@ -168,38 +168,62 @@
 
                 // Function to fetch user data from Firestore
                 // Function to fetch user data from Firestore
-                const fetchUserData = async (userId) => {
+                // Function to fetch registration data
+                const fetchRegistrationData = async (userEmail) => {
                     try {
-                        // Ensure the Firestore path is correctly specified
-                        const userDocRef = doc(db, 'users', userId); // 'users' is the collection name
-                        const docSnap = await getDoc(userDocRef);
+                        const competitionsRef = collection(db, 'registration');
+                        const eventsRef = collection(db, 'events-registration');
 
-                        if (docSnap.exists()) {
-                            const userData = docSnap.data();
-                            userName.textContent = userData.name || "Not Available";
-                            userEmail.textContent = userData.email || "Not Available";
+                        const competitionQuery = query(competitionsRef, where('email', '==', userEmail));
+                        const eventQuery = query(eventsRef, where('email', '==', userEmail));
+
+                        const [competitionSnap, eventSnap] = await Promise.all([
+                            getDocs(competitionQuery),
+                            getDocs(eventQuery),
+                        ]);
+
+                        let competitionData = '<h3 class="text-lg font-semibold text-gray-800 mt-6">Registered Competitions:</h3>';
+                        if (!competitionSnap.empty) {
+                            competitionSnap.forEach((doc) => {
+                                const data = doc.data();
+                                competitionData += `<p class="text-gray-600">${data.competitionName || 'Unknown Competition'}</p>`;
+                            });
                         } else {
-                            console.log("No user document found!");
-                            userName.textContent = "No additional user data found!";
+                            competitionData += `<p class="text-gray-600">No competitions registered yet.</p>`;
                         }
+
+                        let eventData = '<h3 class="text-lg font-semibold text-gray-800 mt-6">Registered Events:</h3>';
+                        if (!eventSnap.empty) {
+                            eventSnap.forEach((doc) => {
+                                const data = doc.data();
+                                eventData += `<p class="text-gray-600">${data.eventName || 'Unknown Event'}</p>`;
+                            });
+                        } else {
+                            eventData += `<p class="text-gray-600">No events registered yet.</p>`;
+                        }
+
+                        profileContainer.innerHTML += competitionData + eventData;
                     } catch (error) {
-                        console.error("Error fetching user data:", error);
-                        userName.textContent = "Error loading user data.";
+                        console.error('Error fetching registration data:', error);
+                        profileContainer.innerHTML += `<p class="text-red-500 mt-4">Error loading registration data.</p>`;
                     }
                 };
 
-                // Listen for Auth state changes
-                auth.onAuthStateChanged((user) => {
+
+                auth.onAuthStateChanged(async (user) => {
                     if (user) {
-                        // Fetch name from Firebase Authentication
-                        userName.textContent = user.displayName || "Name not set";
+                        userName.textContent = user.displayName || 'Name not set';
                         userEmail.textContent = user.email;
                         userId.textContent = user.uid;
+
+                        // Fetch and display registration data
+                        await fetchRegistrationData(user.email);
                     } else {
-                        // Redirect to login if user is not authenticated
                         window.location.href = 'login.html';
                     }
                 });
+
+
 
                 // Handle logout
                 logoutButton.addEventListener('click', async () => {
@@ -246,6 +270,8 @@
             }
         });
     </script>
+
+
 </body>
 
 </html>
