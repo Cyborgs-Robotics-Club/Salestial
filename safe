@@ -72,23 +72,20 @@
                     <p id="userName" class="text-lg font-bold"></p>
                     <p id="userEmail" class="text-gray-600"></p>
                     <p id="userId" class="text-sm text-gray-500"></p>
-
-                    <!-- Competitions and Events will be appended here -->
-                    <div id="userRegistrations" class="mt-8">
-                        <!-- Dynamic content will be inserted here -->
-                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- Firebase Logic -->
         <script type="module">
-            import { auth, db, getDocs, collection, query, where } from './firebase.js';
-        
+            import { auth, db } from './firebase.js';
+            import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
             const userName = document.getElementById('userName');
             const userEmail = document.getElementById('userEmail');
             const userId = document.getElementById('userId');
             const logoutBtn = document.getElementById('logoutBtn');
-        
+
             // Function to fetch registration data
             const fetchRegistrationData = async (userEmail) => {
                 try {
@@ -96,18 +93,18 @@
                         console.error("Firestore instance not initialized.");
                         return;
                     }
-        
+
                     const competitionsRef = collection(db, 'registration');
                     const eventsRef = collection(db, 'events-registration');
-        
+
                     const competitionQuery = query(competitionsRef, where('email', '==', userEmail));
                     const eventQuery = query(eventsRef, where('email', '==', userEmail));
-        
+
                     const [competitionSnap, eventSnap] = await Promise.all([
                         getDocs(competitionQuery),
                         getDocs(eventQuery),
                     ]);
-        
+
                     let competitionData = '<h3 class="text-lg font-semibold text-gray-800 mt-6">Registered Competitions:</h3>';
                     if (!competitionSnap.empty) {
                         competitionSnap.forEach((doc) => {
@@ -117,7 +114,7 @@
                     } else {
                         competitionData += `<p class="text-gray-600">No competitions registered yet.</p>`;
                     }
-        
+
                     let eventData = '<h3 class="text-lg font-semibold text-gray-800 mt-6">Registered Events:</h3>';
                     if (!eventSnap.empty) {
                         eventSnap.forEach((doc) => {
@@ -127,7 +124,7 @@
                     } else {
                         eventData += `<p class="text-gray-600">No events registered yet.</p>`;
                     }
-        
+
                     const profileContainer = document.getElementById('profileContainer');
                     profileContainer.innerHTML += competitionData + eventData;
                 } catch (error) {
@@ -136,20 +133,21 @@
                     profileContainer.innerHTML += `<p class="text-red-500 mt-4">Error loading registration data.</p>`;
                 }
             };
-        
+
+
             // Check user authentication
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     userName.textContent = user.displayName || 'Name not set';
                     userEmail.textContent = user.email;
                     userId.textContent = user.uid;
-        
+
                     await fetchRegistrationData(user.email);
                 } else {
                     window.location.href = 'login.html';
                 }
             });
-        
+
             // Logout functionality
             logoutBtn.addEventListener('click', async () => {
                 try {
@@ -160,7 +158,6 @@
                 }
             });
         </script>
-        
     </div>
 </body>
 
