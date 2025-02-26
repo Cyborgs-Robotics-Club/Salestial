@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         * {
             margin: 0;
@@ -155,24 +156,56 @@
             const selectedEvent = document.getElementById("eventSelect").value;
             const price = document.getElementById("price").value;
 
-            // Create an object for the form data
-            const eventRegistration = {
-                participantName,
-                email,
-                event: selectedEvent,
-                price,
-                timestamp: new Date()
+            // Initialize Razorpay payment
+            const options = {
+                key: "YOUR_RAZORPAY_KEY_ID", // Replace with your Razorpay key
+                amount: parseFloat(price) * 100, // Amount in paise
+                currency: "INR",
+                name: "Event Registration",
+                description: `Registration for ${selectedEvent}`,
+                handler: async function (response) {
+                    // Payment successful
+                    const eventRegistration = {
+                        participantName,
+                        email,
+                        event: selectedEvent,
+                        price,
+                        timestamp: new Date(),
+                        paymentId: response.razorpay_payment_id,
+                        paymentStatus: "completed"
+                    };
+
+                    try {
+                        // Add form data to Firestore
+                        const docRef = await addDoc(collection(db, "event-registrations"), eventRegistration);
+                        console.log("Document written with ID: ", docRef.id);
+                        alert("Registration successful!");
+                        eventForm.reset();
+                    } catch (error) {
+                        console.error("Error adding document: ", error);
+                        alert("Error saving registration. Please try again.");
+                    }
+                },
+                prefill: {
+                    name: participantName,
+                    email: email
+                },
+                theme: {
+                    color: "#3b82f6"
+                },
+                modal: {
+                    ondismiss: function () {
+                        alert("Payment cancelled");
+                    }
+                }
             };
 
             try {
-                // Add form data to Firestore under the 'registrations' collection
-                const docRef = await addDoc(collection(db, "event-registrations"), eventRegistration);
-                console.log("Document written with ID: ", docRef.id);
-
-                // Optionally, show a success message or redirect to another page
-                alert("Registration successful!");
+                const razorpayInstance = new Razorpay(options);
+                razorpayInstance.open();
             } catch (error) {
-                console.error("Error adding document: ", error);
+                console.error("Error initializing payment: ", error);
+                alert("Error initializing payment. Please try again.");
             }
         });
 
